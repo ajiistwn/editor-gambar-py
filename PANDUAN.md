@@ -140,6 +140,7 @@ project/
 │
 ├── app.py
 ├── Dockerfile
+├── docker-compose.yml
 ├── .dockerignore
 ├── .github/workflows/docker-cicd.yml
 ├── requirements.txt
@@ -149,6 +150,40 @@ project/
 ---
 
 ## 🐳 Menjalankan dengan Docker (Lokal)
+
+### Opsi 1 (Direkomendasikan): Docker Compose
+
+Jalankan build + container:
+
+```bash
+docker compose up -d --build
+```
+
+Cek status service:
+
+```bash
+docker compose ps
+```
+
+Stop service:
+
+```bash
+docker compose down
+```
+
+Secara default port bind ke localhost VPS:
+
+```bash
+127.0.0.1:${APP_PORT:-8501}:8501
+```
+
+Jika ingin ubah port lokal VPS, set env dulu:
+
+```bash
+APP_PORT=8601 docker compose up -d --build
+```
+
+### Opsi 2: Docker CLI biasa
 
 Build image:
 
@@ -162,7 +197,7 @@ Jalankan container (port hanya lokal mesin/VPS):
 docker run -d --name editor-gambar-py --restart unless-stopped -p 127.0.0.1:8501:8501 editor-gambar-py:latest
 ```
 
-Akses dari server/VPS:
+Akses dari server/VPS (contoh default):
 
 ```
 http://127.0.0.1:8501

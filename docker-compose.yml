@@ -1,0 +1,10 @@
+services:
+  app:
+    container_name: editor-gambar-py
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: editor-gambar-py:latest
+    ports:
+      - "127.0.0.1:${APP_PORT:-8501}:8501"
+    restart: unless-stopped
