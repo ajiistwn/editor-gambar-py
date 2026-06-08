@@ -139,9 +139,64 @@ Upscale **tidak menambahkan detail baru**, hanya memperhalus tampilan.
 project/
 │
 ├── app.py
+├── Dockerfile
+├── .dockerignore
+├── .github/workflows/docker-cicd.yml
 ├── requirements.txt
 └── PANDUAN.md
 ```
+
+---
+
+## 🐳 Menjalankan dengan Docker (Lokal)
+
+Build image:
+
+```bash
+docker build -t editor-gambar-py:latest .
+```
+
+Jalankan container (port hanya lokal mesin/VPS):
+
+```bash
+docker run -d --name editor-gambar-py --restart unless-stopped -p 127.0.0.1:8501:8501 editor-gambar-py:latest
+```
+
+Akses dari server/VPS:
+
+```
+http://127.0.0.1:8501
+```
+
+---
+
+## 🔁 CI/CD Docker ke VPS (GitHub Actions)
+
+Workflow tersedia di:
+
+```
+.github/workflows/docker-cicd.yml
+```
+
+Alur:
+
+1. Push ke branch `main`
+2. GitHub Actions build image Docker
+3. Image dipush ke GHCR (`ghcr.io`)
+4. VPS pull image terbaru dan restart container
+5. Container bind ke `127.0.0.1:<APP_PORT>` (tidak expose ke publik)
+
+### Secrets yang harus disiapkan di GitHub
+
+* `VPS_HOST` → IP/domain VPS
+* `VPS_USER` → user SSH VPS
+* `VPS_SSH_KEY` → private key SSH
+* `VPS_PORT` → port SSH (opsional, default 22)
+* `GHCR_USERNAME` → username GitHub pemilik package GHCR
+* `GHCR_PAT` → Personal Access Token dengan izin `read:packages`
+* `APP_PORT` → port lokal VPS untuk aplikasi (opsional, default 8501)
+
+> Catatan: Konfigurasi Nginx/virtual host untuk expose ke domain dilakukan terpisah (di luar workflow ini).
 
 ---
 
